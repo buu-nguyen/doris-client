@@ -1,5 +1,5 @@
-import json
 import datetime
+import json
 
 
 class CsvBatch:
@@ -13,8 +13,10 @@ class CsvBatch:
         return self.capacity
 
     def add_line(self, row: list):
-        line_data = self.field_delimiter.join(str(value) if value is not None else '\\N' for value in row)
-        self.capacity += len(line_data.encode('utf-8'))
+        line_data = self.field_delimiter.join(
+            str(value) if value is not None else "\\N" for value in row
+        )
+        self.capacity += len(line_data.encode("utf-8"))
         self.batch_data.append(line_data)
 
     def get_data(self):
@@ -46,12 +48,12 @@ class JsonBatch:
             # self.batch_data.append(data)
             self.batch_data.append(batch_data)
             # self.capacity += len(json.dumps(data, cls=DateEncoder, separators=(",", ":")).encode('utf-8'))
-            self.capacity += len(batch_data.encode('utf-8'))
+            self.capacity += len(batch_data.encode("utf-8"))
 
     def get_data(self):
         # return json.dumps(self.batch_data, separators=(",", ":"))
         data = ",".join(self.batch_data)
-        return "["+data+"]"
+        return "[" + data + "]"
 
     def get_size(self):
         return self.size

@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "doris-client"
+version = "0.0.0" # Placeholder for dynamic versioning
+description = "Yet another Apache Doris client"
+authors = ["Buu NGUYEN <dev@buunguyen.me>"]
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+packages = [{ include = "doris_client" }]
+
+[tool.poetry-dynamic-versioning]
+enable = true
+
+[[tool.poetry.source]]
+name = "cake-python"
+url = "https://asia-southeast1-python.pkg.dev/cake-ci/cake-python/simple/"
+priority = "explicit"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+pandas = "*"
+requests = "*"
+mysql-connector-python = "*"
+
+[tool.poetry.dev-dependencies]
+ruff = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"

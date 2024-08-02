@@ -17,7 +17,9 @@ class DelimiterParser:
             raise RuntimeError("Failed to parse delimiter: Hex str is empty")
         if len(hex_str) % 2 != 0:
             raise RuntimeError("Failed to parse delimiter: Hex str length error")
-        if any(hex_char not in DelimiterParser.HEX_STRING for hex_char in hex_str.upper()):
+        if any(
+            hex_char not in DelimiterParser.HEX_STRING for hex_char in hex_str.upper()
+        ):
             raise RuntimeError("Failed to parse delimiter: Hex str format error")
 
         # Transform to separator
@@ -28,7 +30,7 @@ class DelimiterParser:
     def hex_str_to_bytes(hex_str):
         upper_hex_str = hex_str.upper()
         length = len(upper_hex_str) // 2
-        hex_chars = [upper_hex_str[i:i + 2] for i in range(0, len(upper_hex_str), 2)]
+        hex_chars = [upper_hex_str[i : i + 2] for i in range(0, len(upper_hex_str), 2)]
         bytes_result = bytes([int(hex_char, 16) for hex_char in hex_chars])
         return bytes_result
 
@@ -55,10 +57,14 @@ class CopySQLBuilder:
         if self.data_type == "json":
             self.copy_into_props["file.strip_outer_array"] = "true"
 
-        copy_into_props_str = {key: str(value).lower() if isinstance(value, bool) else str(value) for key, value in
-                               self.copy_into_props.items()}
+        copy_into_props_str = {
+            key: str(value).lower() if isinstance(value, bool) else str(value)
+            for key, value in self.copy_into_props.items()
+        }
 
-        properties = json.dumps(copy_into_props_str, separators=(",", "="))[1:-1].replace("\"", "'")
+        properties = json.dumps(copy_into_props_str, separators=(",", "="))[
+            1:-1
+        ].replace('"', "'")
         sb.append(properties)
         sb.append(" )")
         return "".join(sb)

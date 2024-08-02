@@ -1,4 +1,5 @@
 import base64
+
 import requests
 
 
@@ -13,13 +14,13 @@ class HttpPostBuilder:
         return self
 
     def add_common_header(self):
-        self.headers['Expect'] = '100-continue'
+        self.headers["Expect"] = "100-continue"
         return self
 
     def base_auth(self, user, password):
         auth_info = f"{user}:{password}"
-        encoded = base64.b64encode(auth_info.encode('utf-8')).decode('utf-8')
-        self.headers['Authorization'] = f"Basic {encoded}"
+        encoded = base64.b64encode(auth_info.encode("utf-8")).decode("utf-8")
+        self.headers["Authorization"] = f"Basic {encoded}"
         return self
 
     def set_entity(self, http_entity):
@@ -30,7 +31,9 @@ class HttpPostBuilder:
         if not self.url or not self.http_entity:
             raise ValueError("URL and HTTP entity must be set")
 
-        post_request = requests.Request('POST', self.url, headers=self.headers, data=self.http_entity)
+        post_request = requests.Request(
+            "POST", self.url, headers=self.headers, data=self.http_entity
+        )
         return post_request
 
 
@@ -45,7 +48,7 @@ class HttpPutBuilder:
         return self
 
     def add_file_name(self, file_name):
-        self.headers['fileName'] = file_name
+        self.headers["fileName"] = file_name
         return self
 
     def set_empty_entity(self):
@@ -53,13 +56,13 @@ class HttpPutBuilder:
         return self
 
     def add_common_header(self):
-        self.headers['Expect'] = '100-continue'
+        self.headers["Expect"] = "100-continue"
         return self
 
     def base_auth(self, user, password):
         auth_info = f"{user}:{password}"
-        encoded = base64.b64encode(auth_info.encode('utf-8')).decode('utf-8')
-        self.headers['Authorization'] = f"Basic {encoded}"
+        encoded = base64.b64encode(auth_info.encode("utf-8")).decode("utf-8")
+        self.headers["Authorization"] = f"Basic {encoded}"
         return self
 
     def set_entity(self, http_entity):
@@ -70,5 +73,7 @@ class HttpPutBuilder:
         if not self.url:
             raise ValueError("URL must be set")
 
-        put_request = requests.Request('PUT', self.url, headers=self.headers, data=self.http_entity)
+        put_request = requests.Request(
+            "PUT", self.url, headers=self.headers, data=self.http_entity
+        )
         return put_request

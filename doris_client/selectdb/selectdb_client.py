@@ -1,7 +1,8 @@
-from stage_load import SelectDBStageLoad
-from selectdb_utils import DelimiterParser
-from pydoris.selectdb.db_operator import *
-import pydoris.doris_client as dc
+import pandas as pd
+
+from .db_operator import SelectDBBase
+from .selectdb_utils import DelimiterParser
+from .stage_load import SelectDBStageLoad
 
 
 class SelectDBCloudClient:
@@ -17,22 +18,31 @@ class SelectDBCloudClient:
     def query_to_dataframe(self, sql, columns: list):
         return self.options.db_operator.read_to_df(sql, columns)
 
-    def write_from_df(self, data_df: pd.DataFrame, db, table_name: str, table_model: str,
-                      table_module_key=None,
-                      distributed_hash_key=None,
-                      buckets=None,
-                      table_properties=None,
-                      field_mapping: list[tuple] = None):
+    def write_from_df(
+        self,
+        data_df: pd.DataFrame,
+        db,
+        table_name: str,
+        table_model: str,
+        table_module_key=None,
+        distributed_hash_key=None,
+        buckets=None,
+        table_properties=None,
+        field_mapping: list[tuple] = None,
+    ):
         tables = self.list_tables(db)
         exists = table_name in tables
         if not exists:
-            self.options.db_operator.create_table_from_df(data_df, f"{db}.{table_name}", table_model,
-                                                          table_module_key,
-                                                          distributed_hash_key,
-                                                          buckets,
-                                                          table_properties,
-                                                          field_mapping
-                                                          )
+            self.options.db_operator.create_table_from_df(
+                data_df,
+                f"{db}.{table_name}",
+                table_model,
+                table_module_key,
+                distributed_hash_key,
+                buckets,
+                table_properties,
+                field_mapping,
+            )
         data_list = list(data_df.values)
         self.stage_load(data_list, db, table_name, list(data_df))
 
@@ -70,10 +80,12 @@ class SelectDBOptions:
         self.cluster_name = None
         self.file_split_size = 2 * 1024 * 1024 * 1024
         self.row_batch_size = 10000000
-        self.copy_into_props = {"file.type": "json",
-                                "file.strip_outer_array": "true",
-                                "copy.async": "false",
-                                "copy.strict_mode": "false"}
+        self.copy_into_props = {
+            "file.type": "json",
+            "file.strip_outer_array": "true",
+            "copy.async": "false",
+            "copy.strict_mode": "false",
+        }
 
     def set_copy_into_props(self, properties: dict):
         merged_dict = self.copy_into_props.copy()
@@ -81,25 +93,32 @@ class SelectDBOptions:
         self.copy_into_props = merged_dict
 
     def set_copy_into_file_type(self, file_type: str):
-        self.copy_into_props['file.type'] = file_type
+        self.copy_into_props["file.type"] = file_type
 
     def set_copy_into_file_column_separator(self, separator):
-        self.copy_into_props['file.column_separator'] = DelimiterParser.parse(separator, '\t')
+        self.copy_into_props["file.column_separator"] = DelimiterParser.parse(
+            separator, "\t"
+        )
 
     def set_copy_into_file_line_delimiter(self, delimiter):
-        self.copy_into_props['file.line_delimiter'] = DelimiterParser.parse(delimiter, '\n')
+        self.copy_into_props["file.line_delimiter"] = DelimiterParser.parse(
+            delimiter, "\n"
+        )
 
     def set_copy_into_strict_mode(self, strict: str):
-        self.copy_into_props['copy.strict_mode'] = strict
+        self.copy_into_props["copy.strict_mode"] = strict
 
     def get_copy_into_props(self):
         return self.copy_into_props
 
     def create_selectdb_cloud_operator(self, cluster=""):
         if self.jar_path is not None:
-            self.db_operator = SelectDBBase(f"{self.fe_host}:{self.fe_query_port}",
-                                            f"{self.db}@{cluster}" if cluster != "" else self.db, self.username,
-                                            self.password,
-                                            self.jar_path)
+            self.db_operator = SelectDBBase(
+                f"{self.fe_host}:{self.fe_query_port}",
+                f"{self.db}@{cluster}" if cluster != "" else self.db,
+                self.username,
+                self.password,
+                self.jar_path,
+            )
         else:
             print("create db operator failed , please add jar_path in options")
