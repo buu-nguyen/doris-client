@@ -41,7 +41,7 @@ class Desc:
         for column_name, column_type in column_types.items():
             print(f"Column Name:{column_name} || Column Type: {column_type}")
             if column_type == "object":
-                desc.append((column_name, FieldType.STRING, None, None, None, None))
+                desc.append((column_name, FieldType.JSON, None, None, None, None))
             elif column_type == "int64":
                 desc.append((column_name, FieldType.BIGINT, None, None, None, None))
             elif column_type == "float64":
@@ -70,17 +70,21 @@ class FieldType:
     BIGINT = "BIGINT"
     STRING = "STRING"
     DATETIME = "DATETIME"
-    BOOLEAN = "Boolean"
-    DOUBLE = "Double"
+    BOOLEAN = "BOOLEAN"
+    DOUBLE = "DOUBLE"
     VARCHAR = "VARCHAR(255)"
+    JSON = "JSON"
+    VARIANT = "VARIANT"
     allow_field_types = [
         "BIGINT",
         "STRING",
         "DATETIME",
         "DATETIME(6)",
-        "Boolean",
-        "Double",
+        "BOOLEAN",
+        "DOUBLE",
         "VARCHAR(255)",
+        "JSON",
+        "VARIANT",
     ]
 
 
